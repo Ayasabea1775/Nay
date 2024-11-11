@@ -1,0 +1,24 @@
+<?php
+include 'database_connection.php';
+
+foreach ($_POST['productCode'] as $index => $productCode) {
+    $fit = mysqli_real_escape_string($con, $_POST["fit_$productCode"]);
+    $length = mysqli_real_escape_string($con, $_POST["length_$productCode"]);
+    $pattern = mysqli_real_escape_string($con, $_POST["pattern_$productCode"]);
+
+    
+    $featureQuery = "INSERT INTO product_features (productCode, feature_name, feature_value) VALUES 
+                    ('$productCode', 'Fit', '$fit'),
+                    ('$productCode', 'Length', '$length')";
+    if (!empty($pattern)) {
+        $featureQuery .= ", ('$productCode', 'Pattern', '$pattern')";
+    }
+
+    if (!mysqli_query($con, $featureQuery)) {
+        die("Error updating product features: " . mysqli_error($con));
+    }
+}
+
+header("Location: missing_details.php?success=1");
+exit();
+?>
